@@ -4,13 +4,15 @@ This template should help get you started developing with Vue 3 and TypeScript i
 
 Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
 
-
 # 前言
+
 构建一个通用的中后台系统、vue生态搭建。目标是vue2、vue3各一套、最后看能不能搞成类似cli脚手架可以直接
 命令安装。虽然写后台系统很容易、但是还是需要花点时间去搭建一套、因为要考虑通用性、所以要考虑很多方面。
 
 # 一、项目创建
+
 环境版本。
+
 ```js
 $ node -v
 v20.10.0
@@ -22,13 +24,15 @@ $ pnpm -v
 ```
 
 这里使用 Vite 进行项目创建、创建的是最基础的版本。
+
 ```bash
 pnpm create vite
 ```
 
-
 # 二、代码规范
-主要是两部分实现: 
+
+主要是两部分实现:
+
 1. 代码层面(ESLint + Prettier + Stylelint)
 2. IDE 层面(EditorConfig)
 
@@ -37,10 +41,12 @@ pnpm create vite
 ## 2.1 代码层面
 
 ### 2.1.1 ESLint
+
 ESLint 是一个用于识别和报告在 ECMAScript/JavaScript 代码中发现的模式的工具，其目标是使代码更加一致并避免错误。简单说 ESLint 是一个 JavaScript 代码检查工具，帮助我们来确保代码风格一致，这对于团队协作来说是大有益处的，也用来发现一些潜在错误或不规范的代码。ESLint 的规则是可配置的，因此可以根据团队偏好、项目需求来定义自己的 ESLint 规则。
 
 **安装依赖**
 注意node版本、我们这里使用最新版的eslint、最新版本的好处是它会给出对应匹配的版本，只要你node版本是它规定的就不会出问题。
+
 ```js
 
 pnpm create @eslint/config@latest
@@ -93,48 +99,53 @@ devDependencies:
 
 
 ```
+
 **eslint.config.js 文件**
 它是新的默认配置格式、它默认导出一个数组。当你选择vue+ts时会自动生成如下配置。其它具体配置可以查看官网。
 在扁平化配置里数组的每个配置对象都包含 ESLint 需要在一组文件上执行的所有信息。每个配置对象都由以下属性组成:
+
 ```js
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
 
-
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  {files: ["**/*.{js,mjs,cjs,ts,vue}"]},
-  {languageOptions: { globals: globals.browser }},
+  { files: ["**/*.{js,mjs,cjs,ts,vue}"] },
+  { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   ...pluginVue.configs["flat/essential"],
-  {files: ["**/*.vue"], languageOptions: {parserOptions: {parser: tseslint.parser}}},
+  {
+    files: ["**/*.vue"],
+    languageOptions: { parserOptions: { parser: tseslint.parser } },
+  },
   // 配置对象说明
   {
     name: "eslint", //配置对象的名称。这在错误消息和配置检查器中使用，以帮助识别正在使用哪个配置对象。
     files: ["**/*.{js,mjs,cjs,ts,vue}"], // 指示配置对象应应用于的文件的通配符模式数组。如果未指定，则配置对象适用于与任何其他配置对象匹配的所有文件。
     ignores: [], // 指示配置对象应忽略的文件的通配符模式数组。
-    languageOptions: { //  包含与如何为代码检查配置 JavaScript 相关的设置的对象。这通常用于指定全局变量、环境、解析器选项等。
+    languageOptions: {
+      //  包含与如何为代码检查配置 JavaScript 相关的设置的对象。这通常用于指定全局变量、环境、解析器选项等。
       ecmaVersion: 2020, // 支持的 ECMAScript 版本。可以是任何年份（即 2022）或版本（即 5）。对于最新支持的版本，设置为 "latest"。（默认："latest"）
-      sourceType : "module", //  可能的值是 "script" 用于传统脚本文件，"module" 用于 ECMAScript 模块 (ESM) 和 "commonjs" 用于 CommonJS 文件。（默认："module" 用于 .js 和 .mjs 文件；"commonjs" 用于 .cjs 文件）
+      sourceType: "module", //  可能的值是 "script" 用于传统脚本文件，"module" 用于 ECMAScript 模块 (ESM) 和 "commonjs" 用于 CommonJS 文件。（默认："module" 用于 .js 和 .mjs 文件；"commonjs" 用于 .cjs 文件）
       globals: globals.browser, // 指示配置对象应应用于的全局变量的对象。这通常用于指定全局变量、环境、解析器选项等。
       // 其它选项
     },
-    plugins: [ // 包含插件名称到插件对象的名称-值映射的对象，这通常用于指定插件的名称和配置选项。
+    plugins: [
+      // 包含插件名称到插件对象的名称-值映射的对象，这通常用于指定插件的名称和配置选项。
       pluginJs, // 插件名称。
       tseslint, // 插件名称。
       pluginVue, // 插件名称。
     ],
-    rules: { // 指示配置对象应应用于的规则的对象。这通常用于指定规则的名称和配置选项。
+    rules: {
+      // 指示配置对象应应用于的规则的对象。这通常用于指定规则的名称和配置选项。
       "no-console": "error", // 规则名称。
       "no-debugger": "error", // 规则名称。
     },
-
-  }
+  },
 ];
-
 ```
 
 编辑器如 VS Code 中集成 ESLint 插件，可以帮助你找出代码中不符合 ESLint 规则的地方，通过不同颜色下划线该告诉你错误信息、警告信息等，这很有用。插件名称就叫 ESLint，注意，ESLint 扩展会自动查找 ESLint 全局安装版本，在项目根目录下找到你的配置文件即 eslint.config.js 文件。
@@ -170,7 +181,6 @@ export default [
     ],
   },
 ];
-
 ```
 
 配置规则: 规则是 ESLint 的核心构建块。@eslint/js 包已经配置了大量规则pluginJs.configs.recommended，当然，你也可以在 rules 中覆盖这些规则来完成你的需要。
@@ -195,11 +205,12 @@ export default [
     },
   },
 ];
-
 ```
+
 对应vue项目要自定义解析器需要安装 vue-eslint-parser 插件 用于 .vue 文件的 ESLint 自定义解析器。
+
 ```js
-pnpm add --save-dev vue-eslint-parser 
+pnpm add --save-dev vue-eslint-parser
 // 然后，在 eslint.config.js 中配置
 // Vue 的配置
 import globals from "globals";
@@ -218,7 +229,7 @@ export default [
   ...pluginVue.configs["flat/essential"],
   // vue文件配置
   {
-    files: ["**/*.vue"], 
+    files: ["**/*.vue"],
     languageOptions: {
       parser: parserVue,
       parserOptions: {
@@ -247,6 +258,7 @@ export default [
 ```
 
 ESLint 脚本命令配置: 在实际项目中，我们会将命令写在 package.json 的 scripts 里 比如这样：
+
 1. --max-warnings： 此选项允许您指定警告阈值，如果项目中存在过多的警告级别规则冲突，则该阈值可用于强制 ESLint 退出并显示错误状态。
 2. --fix： 指示 ESLint 尝试修复尽可能多的问题。
 3. --cache： 存储有关已处理文件的信息，以便仅对更改的文件进行操作。确保仅对更改的文件进行 linted 处理，从而显著提高 ESLint 的运行时性能。
@@ -255,7 +267,7 @@ ESLint 脚本命令配置: 在实际项目中，我们会将命令写在 package
 ```json
 {
   "scripts": {
-    "lint:eslint": "eslint --fix  --cache --max-warnings 0  \"src/**/*.{vue,ts,tsx}\"  --cache-location 'node_modules/.cache/eslint/'",
+    "lint:eslint": "eslint --fix  --cache --max-warnings 0  \"src/**/*.{vue,ts,tsx}\"  --cache-location \"node_modules/.cache/eslint/\"",,
   }
 }
 
@@ -266,8 +278,9 @@ pnpm lint:eslint
 ```
 
 在 Vite 中集成 ESLint 插件、vite-plugin-eslint 它可以在 Vite 程序中检查 ESLint 的错误，并将其错误或警告输出在终端和页面上。
+
 ```js
-pnpm add --save-dev vite-plugin-eslint @types/vite-plugin-eslint 
+pnpm add --save-dev vite-plugin-eslint @types/vite-plugin-eslint
 
 // 在 vite.config.ts 中配置
 import { defineConfig } from 'vite'
@@ -279,5 +292,252 @@ export default defineConfig({
   plugins: [vue(), eslint()],
 })
 
+```
+
+### 2.1.2 Prettier
+
+Prettier 是一个代码格式化工具，主要用于自动化代码的风格统一和格式化，专注于确保代码的可读性和一致性。
+
+```js
+pnpm add --save-dev --save-exact prettier
+
+
+```
+
+配置 Prettier、在根目录下新增两个文件：
+
+1. .prettierignore 忽略文件，表示哪些文件忽略格式化
+2. .prettierrc.js Prettier 配置文件(ES Modules)
+
+```js
+// .prettierignore
+public;
+src / assets;
+
+// .prettierrc.js
+/** @type {import('prettier').Config} */
+const config = {
+  printWidth: 100, // 每行最大字符数
+  tabWidth: 4, // 缩进空格数
+  semi: true, // 尾部添加分号
+  singleQuote: true, // 是否使用单引号而不是双引号
+  bracketSpacing: true, // 在对象字面量的括号内添加空格
+  arrowParens: "always", // 总是为箭头函数的参数添加圆括号
+  proseWrap: "preserve", // 不改变 Markdown 文本的换行
+  bracketSameLine: false,
+};
+
+export default config;
+```
+
+在 VS Code 扩展中搜索 Prettier 插件并进行安装。在你的 package.json 的 scripts 下新增脚本
+
+1. --write：这将就地重写所有已处理的文件。这与 eslint --fix 工作流程相当。您也可以使用 -w 别名。
+2. --cache： 存储有关已处理文件的信息，以便仅对更改的文件进行操作。
+
+```json
+{
+  "scripts": {
+    "lint:format": "prettier  --write --cache \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\""
+  }
+}
+// 然后就可以在终端来格式化你的代码：
+pnpm lint:format
+
+```
+
+### 2.1.3 ESLint 和 Prettier配合使用
+
+在 ESLint v9.0.0 前的格式化程序和 Prettier 起冲突，这是一个常常发生的事情，这时我们需要另外两个依赖包来解决冲突问题。
+
+1. eslint-config-prettier：关闭所有不必要或可能与 Prettier 冲突的规则
+2. eslint-plugin-prettier：将 Prettier 作为规则插入到 ESLint 里
+
+```js
+pnpm install --save-dev eslint-config-prettier
+pnpm install --save-dev eslint-plugin-prettier
+// 在 eslint.config.js 文件中配置
+//...其他依赖
+import pluginPrettier from "eslint-plugin-prettier";
+import eslintConfigPrettier from "eslint-config-prettier";
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  // Prettier 配置
+  {
+    plugins: {
+      prettier: pluginPrettier,
+    },
+    rules: {
+      "prettier/prettier": "error",
+    },
+  },
+  eslintConfigPrettier,
+];
+```
+
+### 2.1.4 Stylelint
+
+Stylelint 是一个强大的 CSS 样式代码检查工具，用于检测 CSS 代码中的错误和警告。
+和 ESLint 很类似，都是定义规则、风格来进行代码检查，保证代码风格一致性，并发现一些潜在错误或不规范的代码。不同在于 Stylelint 针对的是 CSS 样式的代码检查。
+**安装依赖**
+
+```js
+pnpm add --save-dev stylelint
+```
+
+在 VS Code 扩展模块搜索 Stylelint 进行安装、在 settings.json 文件中写入以下配置：
+
+```js
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.stylelint": "explicit",//配置 stylelint 保存自动修复
+    },
+    "stylelint.validate": ["css", "less", "scss", "sass", "postcss", "vue"]//插件检查范围
+
+```
+
+在根目录下新建一个 stylelint.config.js 文件，同时确保你的 package.json 配置了 "type": "module"，表示使用 ESM 模块导出。以及 .stylelintignore 忽略文件。
+
+```js
+/** @type {import('stylelint').Config} */
+export default {
+  extends: [
+    "stylelint-config-standard",
+    "stylelint-config-recess-order",
+    "stylelint-config-html",
+  ],
+  plugins: ["stylelint-prettier"],
+  rules: {
+    "prettier/prettier": true,
+    "no-empty-source": null,
+    "import-notation": null,
+    "selector-class-pattern": null,
+    "at-rule-no-unknown": [
+      true,
+      {
+        ignoreAtRules: [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "use",
+          "mixin",
+          "include",
+          "extend",
+          "forward",
+          "if",
+          "else",
+          "each",
+        ],
+      },
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        ignorePseudoClasses: ["global", "deep"],
+      },
+    ],
+  },
+  overrides: [
+    {
+      files: ["*.scss", "**/*.scss"],
+      customSyntax: "postcss-scss",
+      extends: [
+        "stylelint-config-standard-scss",
+        "stylelint-config-recommended-vue/scss",
+      ],
+      rules: {},
+    },
+    {
+      files: ["*.vue", "**/*.vue", "*.html", "**/*.html"],
+      customSyntax: "postcss-html",
+      extends: [
+        "stylelint-config-standard",
+        "stylelint-config-recommended-vue",
+      ],
+    },
+  ],
+  ignoreFiles: [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.json",
+    "**/*.md",
+    "**/*.yaml",
+    "**/*.yml",
+    "**/*.d.ts",
+  ],
+};
+
+// .stylelintignore
+node_modules
+dist
+public
+src/assets/*
+```
+
+Stylelint 常用的相关依赖
+
+1. stylelint-config-standard：Stylelint 的 CSS 标准配置
+2. stylelint-config-standard-scss：Stylelint 的标准可共享 SCSS 配置。
+3. Scss：stylelint-config-recommended-scss：Stylelint 推荐的可共享 SCSS 配置
+4. stylelint-config-recommended-vue：扩展 stylelint-config-recommended 配置，并提供推荐的 Vue 相关规则，
+5. stylelint-config-recess-order：对 CSS 属性进行排序
+6. stylelint-config-html：此配置捆绑  postcss-html  自定义语法并对其进行配置
+7. postcss：使用 JavaScript 转换 CSS 的工具
+8. postcss-html: 用于解析 HTML（和类 HTML）的 PostCSS 语法，比如 Vue SFC 文件
+9. Less：postcss-less：用于解析 Less 的 PostCSS 语法
+10. Scss：postcss-scss： 用于解析 Scss 的 PostCSS 语法
+
+**安装依赖**
+
+```js
+pnpm add stylelint-config-standard stylelint-config-standard-scss stylelint-config-recommended-scss --save-dev
+pnpm add stylelint-config-recommended-vue stylelint-config-recess-order stylelint-config-html --save-dev
+pnpm add postcss postcss-html postcss-scss --save-dev
+// 如果你使用的是Less，把 postcss-scss 替换成 postcss-less
+
+```
+
+与 Prettier 配合，在 ESLint 部分，我们为配合 Prettier 时介绍了两个包， eslint-config-prettier 和 eslint-plugin-prettier而在 Stylelint 中，也有类似的包，分别是
+
+1. stylelint-config-prettier，用于解决 Stylelint 和 Prettier 之间的规则冲突问题已经不维护了。因为从 Stylelint v15 开始，所有与样式相关的格式规则都已被弃用，比如那些强制执行特定代码风格或格式的规则。如果您使用的是 v15 或更高版本，并且没有使用这些已弃用的规则，则不再需要此插件。
+2. stylelint-prettier，作为 Stylelint 规则运行 Prettier，并将差异报告为单独的 Stylelint 问题
+
+这里只安装 stylelint-prettier、注意，请确保你已经安装了 Stylelint 和 Prettier
+
+```js
+pnpm add stylelint-prettier --save-dev
+// 然后在 stylelint.config.js 中配置
+// stylelint.config.js
+/** @type {import('stylelint').Config} */
+
+export default {
+  plugins: ["stylelint-prettier"],
+  rules: {
+    "prettier/prettier": true,
+  },
+};
+```
+
+配置stylelint 脚本命令
+
+1. --fix：自动修复规则报告的问题
+2. --max-warnings：设置接受的警告数量限制
+3. --cache：存储已处理文件的结果，以便 Stylelint 仅对更改的文件进行操作
+4. --cache-location：作用同 ESLint，将缓存文件放在 node_modules/.cache 下
+
+```json
+{
+  "scripts": {
+    "lint:style": "stylelint --fix --max-warnings 0 --cache \"**/*.{css,scss,sass,vue}\" --cache-location \"node_modules/.cache/stylelint/\""
+
+  }
+}
+// 然后就可以在终端执行命令来调用脚本
+pnpm lint:style
 
 ```
