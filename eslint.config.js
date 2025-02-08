@@ -3,6 +3,8 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
 import parserVue from 'vue-eslint-parser';
+import pluginPrettier from 'eslint-plugin-prettier'; // 解决ESLint 和 Prettier冲突问题
+import eslintConfigPrettier from "eslint-config-prettier"; // 解决ESLint 和 Prettier冲突问题
 
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -37,6 +39,15 @@ export default [
       ...pluginVue.configs['vue3-recommended'].rules,
     },
   },
+  // Prettier 配置
+  {
+    plugins: {
+      prettier: pluginPrettier,
+    },
+    rules: {
+      'prettier/prettier': 'error',
+    },
+  },
   // 测试eslint规则
   {
     files: ["src/main.ts"], //确定配置对象应用于哪些文件
@@ -47,6 +58,8 @@ export default [
       "no-var": "error", //禁止使用var
     },
   },
+  // 解决ESLint 和 Prettier冲突问题
+  eslintConfigPrettier,
   // 配置忽略检查文件
   {
     ignores: [
