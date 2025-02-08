@@ -603,3 +603,62 @@ pnpm clear:cache
   }
 }
 ```
+
+## 2.2 工程层面
+
+项目工程上的规范主要是 Git 提交规范、在团队合作中, Git 提交如果没有规范化, 会让代码库变得混乱不堪, 影响协作效率, 特别是在多人协作中。
+所以我们第一步先配置git 提交规范。git提交规范化是从项目工程化的角度出发, 让团队成员在提交代码时, 通过配置的工具自动实现规范化, 从而避免一些错误。主要是: lint 校验和 Commit Message 规范化
+
+1. husky: 一个 Git hook 工具, 使用 Husky 可以挂载 Git 钩子, 使现代的原生 Git 钩子变得简单, 即可以帮助我们在 commit(提交) 前做一些自定义操作。
+2. Lint-staged: 对暂存区的 git 文件运行 linters, 也就是只对暂存的文件进行 ESLint、Prettier、Stylelint 等检查。
+3. commitlint: 对 commit 信息进行检查是否符合规范, 即 lint Commit Message。
+4. Commitizen: 基于 Node.js 的  git commit  命令行工具, 辅助生成标准化规范化的 Commit Message。
+
+### 2.2.1 Husky
+
+在我们执行 git init 命令后, 会在当前目录下生成一个 .git 的隐藏文件夹, 目录中又存在一个 hooks 文件夹。hook 是钩子的意思, 有点类似于 Vue 的生命周期钩子一样, Git 同样也能在特定的重要动作发生时触发自定义脚本。
+
+**.git 目录结构**
+
+```js
+└── .git
+    ├── COMMIT_EDITMSG  # 保存最新的commit message
+    ├── config  # 仓库的配置文件
+    ├── description  # 仓库的描述信息, 主要给gitweb使用
+    ├── HEAD    # 指向当前分支
+    ├── hooks   # 存放一些shell脚本, 可以设置特定的git命令后触发相应的脚本
+    ├── index   # 二进制暂存区（stage）
+    ├── info    # 仓库的其他信息
+    │   └── exclude # 本地的排除文件规则, 功能和.gitignore类似
+    ├── logs    # 保存所有更新操作的引用记录, 主要用于git reflog等
+    ├── objects # 所有文件的存储对象
+    └── refs    # 具体的引用, 主要存储分支和标签的引用
+
+```
+
+.git/hooks 目录下存放着一些 shell 脚本, 以 .sample 为后缀, 表示默认不启动, 这些 shell 脚本主要分为两大类：客户端和服务端两类。我们主要关注客户端部分常用一下四个:
+
+1. pre-commit  钩子在键入提交信息前运行、所以可以进行 lint 校验, 比如 ESLint、Stylelint、Prettier 等。
+2. prepare-commit-msg  钩子在启动提交信息编辑器之前, 默认信息被创建之后运行。
+3. commit-msg  存有当前提交信息的临时文件, 如果该钩子脚本以非零值退出, Git 将放弃提交、所以可以对当前 Commit Message 进行检查并使用工具来规范化 Message 信息。
+4. post-commit  钩子在整个提交过程完成后运行。
+
+而要在 git 钩子里去做这些事情就需要借助工具 Husky 来配置 Git 钩子、这是因为 Husky 能监听 Git 操作并执行脚本代码。
+
+**安装依赖**
+
+```js
+// 官网: https://github.com/typicode/husky
+pnpm add --save-dev husky
+pnpm add -D husky
+// 安装版本是: husky 9.1.7
+
+// 使用 Husky 推荐的 init 命令、init 命令简化了项目中的 husky 设置。它会在 .husky/ 中创建 pre-commit 脚本, 并更新 package.json “scripts”中的 prepare 脚本。
+pnpm exec husky init
+
+// 在终端运行下面的命令, 来初始化 husky
+pnpm prepare
+
+```
+
+到这里已经可以实现对 git 提交时的校验了,不过功能比较简陋, 而且只应该 lint 我当前修改的文件, 而不是全量 lint , 这样就可以避免 lint 的耗时, 提高效率且有针对性。这时我们需要借助 lint-staged 来实现。
