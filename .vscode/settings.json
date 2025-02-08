@@ -20,5 +20,10 @@
     "yaml",
     "toml",
     "xml"
-  ]
+  ],
+  "explorer.fileNesting.enabled": true, //是否启用文件折叠
+  "explorer.fileNesting.expand": false, //控制是否自动扩展文件嵌套
+  "explorer.fileNesting.patterns": {
+    "eslint.config.js": ".prettierrc.*, stylelint.*, .editorconfig, .prettierignore, .stylelintignore"
+  }
 }

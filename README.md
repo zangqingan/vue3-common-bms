@@ -105,31 +105,31 @@ devDependencies:
 在扁平化配置里数组的每个配置对象都包含 ESLint 需要在一组文件上执行的所有信息。每个配置对象都由以下属性组成:
 
 ```js
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginVue from "eslint-plugin-vue";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { files: ["**/*.{js,mjs,cjs,ts,vue}"] },
+  { files: ['**/*.{js,mjs,cjs,ts,vue}'] },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
-  ...pluginVue.configs["flat/essential"],
+  ...pluginVue.configs['flat/essential'],
   {
-    files: ["**/*.vue"],
+    files: ['**/*.vue'],
     languageOptions: { parserOptions: { parser: tseslint.parser } },
   },
   // 配置对象说明
   {
-    name: "eslint", //配置对象的名称。这在错误消息和配置检查器中使用，以帮助识别正在使用哪个配置对象。
-    files: ["**/*.{js,mjs,cjs,ts,vue}"], // 指示配置对象应应用于的文件的通配符模式数组。如果未指定，则配置对象适用于与任何其他配置对象匹配的所有文件。
+    name: 'eslint', //配置对象的名称。这在错误消息和配置检查器中使用，以帮助识别正在使用哪个配置对象。
+    files: ['**/*.{js,mjs,cjs,ts,vue}'], // 指示配置对象应应用于的文件的通配符模式数组。如果未指定，则配置对象适用于与任何其他配置对象匹配的所有文件。
     ignores: [], // 指示配置对象应忽略的文件的通配符模式数组。
     languageOptions: {
       //  包含与如何为代码检查配置 JavaScript 相关的设置的对象。这通常用于指定全局变量、环境、解析器选项等。
       ecmaVersion: 2020, // 支持的 ECMAScript 版本。可以是任何年份（即 2022）或版本（即 5）。对于最新支持的版本，设置为 "latest"。（默认："latest"）
-      sourceType: "module", //  可能的值是 "script" 用于传统脚本文件，"module" 用于 ECMAScript 模块 (ESM) 和 "commonjs" 用于 CommonJS 文件。（默认："module" 用于 .js 和 .mjs 文件；"commonjs" 用于 .cjs 文件）
+      sourceType: 'module', //  可能的值是 "script" 用于传统脚本文件，"module" 用于 ECMAScript 模块 (ESM) 和 "commonjs" 用于 CommonJS 文件。（默认："module" 用于 .js 和 .mjs 文件；"commonjs" 用于 .cjs 文件）
       globals: globals.browser, // 指示配置对象应应用于的全局变量的对象。这通常用于指定全局变量、环境、解析器选项等。
       // 其它选项
     },
@@ -141,8 +141,8 @@ export default [
     ],
     rules: {
       // 指示配置对象应应用于的规则的对象。这通常用于指定规则的名称和配置选项。
-      "no-console": "error", // 规则名称。
-      "no-debugger": "error", // 规则名称。
+      'no-console': 'error', // 规则名称。
+      'no-debugger': 'error', // 规则名称。
     },
   },
 ];
@@ -154,30 +154,30 @@ export default [
 
 ```js
 //eslint.config.js
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginVue from "eslint-plugin-vue";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   //...
   {
     ignores: [
-      "**/node_modules",
-      "**/public",
-      "**/assets",
-      "**/dist",
-      "**/package-lock.json",
-      "**/yarn.lock",
-      "**/pnpm-lock.yaml",
-      "**/.history",
-      "**/CHANGELOG*.md",
-      "**/*.min.*",
-      "**/LICENSE*",
-      "**/__snapshots__",
-      "**/auto-import?(s).d.ts",
-      "**/components.d.ts",
+      '**/node_modules',
+      '**/public',
+      '**/assets',
+      '**/dist',
+      '**/package-lock.json',
+      '**/yarn.lock',
+      '**/pnpm-lock.yaml',
+      '**/.history',
+      '**/CHANGELOG*.md',
+      '**/*.min.*',
+      '**/LICENSE*',
+      '**/__snapshots__',
+      '**/auto-import?(s).d.ts',
+      '**/components.d.ts',
     ],
   },
 ];
@@ -187,21 +187,21 @@ export default [
 
 ```js
 //eslint.config.js
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginVue from "eslint-plugin-vue";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   //...
   {
-    files: ["src/main.ts"], //确定配置对象应用于哪些文件
-    ignores: ["node_modules"], //确定应该忽略哪些文件
+    files: ['src/main.ts'], //确定配置对象应用于哪些文件
+    ignores: ['node_modules'], //确定应该忽略哪些文件
     rules: {
-      "no-alert": "error", //禁止使用 alert、confirm 和 prompt
-      "no-empty-function": "error", //禁止空函数
-      "no-var": "error", //禁止使用var
+      'no-alert': 'error', //禁止使用 alert、confirm 和 prompt
+      'no-empty-function': 'error', //禁止空函数
+      'no-var': 'error', //禁止使用var
     },
   },
 ];
@@ -322,8 +322,8 @@ const config = {
   semi: true, // 尾部添加分号
   singleQuote: true, // 是否使用单引号而不是双引号
   bracketSpacing: true, // 在对象字面量的括号内添加空格
-  arrowParens: "always", // 总是为箭头函数的参数添加圆括号
-  proseWrap: "preserve", // 不改变 Markdown 文本的换行
+  arrowParens: 'always', // 总是为箭头函数的参数添加圆括号
+  proseWrap: 'preserve', // 不改变 Markdown 文本的换行
   bracketSameLine: false,
 };
 
@@ -540,4 +540,66 @@ export default {
 // 然后就可以在终端执行命令来调用脚本
 pnpm lint:style
 
+```
+
+### 2.1.5 EditorConfig
+
+EditorConfig 帮助我们在不同 IDE 编辑器中维持一致的编码风格和格式化规范，比如缩进，字符编码等，有助于为跨各种编辑器和 IDE 处理同一项目的多个开发人员保持一致的编码风格。
+在 VS Code 中安装 EditorConfig 插件，然后在项目根目录下创建一个 .editorconfig 文件，配置如下：
+
+```js
+# 官网：https://editorconfig.org/
+root = true # 表示最顶层的 EditorConfig 文件，即停止向上找，直接使用该配置文件
+
+[*] # 匹配所有文件
+charset = utf-8 # 控制字符集
+indent_style = space # 缩进方式 (tabl | space)
+indent_size = 2 # 缩进大小
+
+end_of_line = crlf # 设置换行符的类型。可选值为 lf（Unix 风格）、cr（Mac 风格）或 crlf（Windows 风格）。
+insert_final_newline = true # 是否在文件末尾插入一个空行，以确保文件总是以换行符结尾
+trim_trailing_whitespace = true # 是否保存文件时删除行尾的空白字符
+
+
+```
+
+在 VS Code 扩展模块搜索 EditorConfig 进行安装
+
+### 2.1.6 其它
+
+1. 快捷键: 上面我们配置了 ESLint、Prettier、Stylelint的脚本命令，我们可以写一个聚合的命令，统一执行我们的三条脚本命令。注意要先格式化代码后再调用 ESLint，Stylelint 进行代码检查
+
+```json
+{
+  "scripts": {
+    "lint": "pnpm lint:format && pnpm lint:eslint && pnpm lint:style"
+  }
+}
+```
+
+2. 缓存文件删除:Eslint 和 Stylelint 命令中，会生成缓存文件，这些文件存在 node_modules/.cache 目录中，有些时候我们可以删除这些缓存，它的作用在于删除缓存会强制重新检查所有文件，而不是依赖可能过时的缓存结果。这里我们需要到一个新的包 rimraf ,它是一个跨平台的删除工具，我们借助它来删除缓存文件。
+   **安装**
+
+```js
+pnpm add -D rimraf
+// 在 package.json 的 scripts 中写入删除缓存文件脚本：
+  "scripts": {
+    "clear:cache": "rimraf node_modules/.cache",
+  }
+// 然后就可以在终端执行命令来删除 node_modules/.cache 文件
+pnpm clear:cache
+
+```
+
+3. 文件折叠:ESLint、Stylelint、Prettier都有其配置文件及忽略文件等，可以在 VS Code 中写入配置来折叠它们，显得整洁。
+
+```json
+{
+  "explorer.fileNesting.enabled": true, //是否启用文件折叠
+  "explorer.fileNesting.expand": false, //控制是否自动扩展文件嵌套
+  // 折叠规则:收敛在哪
+  "explorer.fileNesting.patterns": {
+    "eslint.config.js": ".prettierrc.*, stylelint.*, .editorconfig, .prettierignore, .stylelintignore"
+  }
+}
 ```
