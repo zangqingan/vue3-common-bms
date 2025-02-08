@@ -662,3 +662,59 @@ pnpm prepare
 ```
 
 到这里已经可以实现对 git 提交时的校验了,不过功能比较简陋, 而且只应该 lint 我当前修改的文件, 而不是全量 lint , 这样就可以避免 lint 的耗时, 提高效率且有针对性。这时我们需要借助 lint-staged 来实现。
+
+### 2.2.2 Lint-staged
+
+lint-staged 是一个专门针对已放入 Git 暂存区的文件进行检查的工具, 它可以帮助我们在暂存的文件上执行 lint, 而不是对整个项目进行全量校验。这样可以显著减少 lint 校验的时间消耗, 提高效率, 并确保校验的针对性。
+
+**安装依赖**
+
+```js
+pnpm add --save-dev lint-staged
+pnpm add -D lint-staged
+// 安装版本是: lint-staged 15.4.3
+
+```
+
+**配置**
+可以通过多种方式来配置，一种普遍的方式是直接在 package.json 中配置，比如:
+
+```js
+// 在 package.json 中添加以下配置
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.vue": [
+      "prettier --write",
+	  "eslint --fix",
+      "stylelint --fix",
+    ]
+  },
+
+
+```
+
+还有种方式是创建一个配置文件，比如:
+
+```js
+// 在根目录创建一个 lint-staged.config.js 文件这个文件默认导出一个对象、注意使用ESM模式。
+/** @type {import('lint-staged').Config} */
+export default {
+  '*.vue': ['prettier --write --cache', 'eslint --fix', 'stylelint --fix'],
+  '*.{js,ts,jsx,tsx}': ['prettier --write --cache', 'eslint --fix'],
+  '*.{css,scss,less}': ['prettier --write --cache', 'stylelint --fix'],
+  '*.html': ['prettier --write --cache', 'stylelint --fix'],
+  '*.json': 'prettier --write --cache',
+};
+```
+
+然后是在 Git 钩子 pre-commit 能够正确调用 lint-staged 即可实现 linter 校验。当然在运行指定的 linter 和代码格式化工具时，建议先运行 Prettier ，因为它会对代码进行整体格式化，这样可以确保代码在进行 lint 校验之前是一致且格式良好的状态。
+
+添加新的 hook、在根目录下的终端运行如下 shell 命令。这条命令的作用是将 "pnpm lint-staged" 写入到 .husky/pre-commit 文件中。
+
+```js
+echo "pnpm lint-staged" > .husky/pre-commit
+
+```
