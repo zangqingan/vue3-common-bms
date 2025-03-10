@@ -718,3 +718,291 @@ export default {
 echo "pnpm lint-staged" > .husky/pre-commit
 
 ```
+
+### 2.2.3 Commitlint
+
+在上面两步完成后使用 git commit 命令进行提交时如果通不过校验 Commit 提交并未通过而是直接退出了。但是提交信息还是没有统一的规范的。提交信息规范化有以下优点
+
+1. 提高代码可读性和项目质量、改善项目可维护性
+2. 简化协作和沟通
+3. 方便版本管理和代码回溯
+4. 有助于自动化生成变更日志
+
+在社区发展中有两个提交规范比较出色
+
+1. Angular 规范，由 Angular 团队制定并使用，也被社区广泛接受
+2. Conventional Commits 规范则是由 Angular 规范发展调整而来的一个更通用的规范
+
+不是Angular 项目一般都是使用另一个、而要让我们的提交信息能够符合 Conventional Commits 规范，可通过使用工具如 commitlint 来实现。
+
+**安装依赖**
+
+```js
+pnpm add --save-dev @commitlint/{cli,config-conventional}
+// 会在你的 package.json 文件的 devDependencies 中生成两个依赖
+@commitlint/cli，命令行工具
+@commitlint/config-conventional，此配置遵循 Conventional Commits 规范，与 @commitlint/cli 配合使用
+
+// 如果安装不了也可以单独安装这两个包
+
+```
+
+创建配置文件: commitlint.config.js
+
+```js
+export default {
+  ignores: [(commit) => commit === ''],
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'type-enum': [
+      2,
+      'always',
+      [
+        'feat', // 新功能 | New feature
+        'fix', // 修复bug | Bug fix
+        'docs', // 文档更新 | Documentation updates
+        'style', // 代码格式（不影响代码运行的变动） | Code formatting (changes that do not affect code execution)
+        'refactor', // 重构（既不是新增功能，也不是修改bug的代码变动） | Refactoring (code changes that neither fix a bug nor add a feature)
+        'perf', // 性能优化 | Performance improvements
+        'test', // 增加测试 | Adding tests
+        'chore', // 构建过程或辅助工具的变动 | Changes to the build process or auxiliary tools
+        'revert', // 回滚到上一个版本 | Revert to a previous version
+        'build', // 编译相关的修改，例如发布版本、对项目构建或者依赖的改动 | Compilation-related changes, such as release versions or changes to project build or dependencies
+        'types', // 类型 | Types
+        'ci', // CI 配置文件和脚本的更改 | Changes to CI configuration files and scripts
+      ],
+    ],
+    'header-max-length': [2, 'always', 100], // 头部最大长度100
+    'body-max-line-length': [2, 'always', 100], // body最大长度100
+    'footer-max-line-length': [2, 'always', 100], // footer最大长度100
+    'type-empty': [2, 'never'], // type 不能为空
+    'subject-empty': [2, 'never'], // subject 不能为空
+    // "scope-empty": [2, "never"], // scope 不能为空
+    'type-case': [2, 'always', 'lower-case'], // type 小写
+    'scope-case': [2, 'always', ['lower-case', 'pascal-case']], // scope - lower case、PascalCase
+    'subject-case': [0, 'always'], // subject 不显示大小写
+  },
+  prompt: {
+    questions: {
+      type: {
+        description: "选择你要提交的变更类型 | Select the type of change you're committing",
+        enum: {
+          feat: {
+            description: '新功能 | A new feature',
+            title: 'Features | 功能',
+            emoji: '✨',
+          },
+          fix: {
+            description: '修复bug | A bug fix',
+            title: 'Bug Fixes | 修复',
+            emoji: '🐛',
+          },
+          docs: {
+            description: '仅文档更改 | Documentation only changes',
+            title: 'Documentation | 文档',
+            emoji: '📚',
+          },
+          style: {
+            description:
+              '不影响代码含义的更改（空白、格式化、缺少分号等）| Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)',
+            title: 'Styles | 样式',
+            emoji: '💎',
+          },
+          refactor: {
+            description:
+              '既不修复bug也不添加新功能的代码更改 | A code change that neither fixes a bug nor adds a feature',
+            title: 'Code Refactoring | 代码重构',
+            emoji: '📦',
+          },
+          perf: {
+            description: '提高性能的代码更改 | A code change that improves performance',
+            title: 'Performance Improvements | 性能优化',
+            emoji: '🚀',
+          },
+          test: {
+            description:
+              '添加缺失的测试或修正现有的测试 | Adding missing tests or correcting existing tests',
+            title: 'Tests | 测试',
+            emoji: '🚨',
+          },
+          chore: {
+            description:
+              '构建过程或辅助工具的变动 | Changes to the build process or auxiliary tools',
+            title: 'Chores | 杂务',
+            emoji: '🔧',
+          },
+          revert: {
+            description: '回滚到上一个版本 | Revert to a previous version',
+            title: 'Reverts | 回滚',
+            emoji: '⏪',
+          },
+          build: {
+            description:
+              '编译相关的修改，例如发布版本、对项目构建或者依赖的改动 | Changes that affect the build system or external dependencies',
+            title: 'Builds | 构建',
+            emoji: '🏗',
+          },
+          types: {
+            description: '类型定义文件更改 | Changes to type definitions',
+            title: 'Types | 类型',
+            emoji: '🏷️',
+          },
+          ci: {
+            description: 'CI 配置文件和脚本的更改 | Changes to CI configuration files and scripts',
+            title: 'Continuous Integration | 持续集成',
+            emoji: '🎡',
+          },
+        },
+      },
+      scope: {
+        description:
+          '变更的范围是什么（例如组件或文件名，可选）| What is the scope of this change (e.g. component or file name，optional)',
+      },
+      subject: {
+        description:
+          '写一个简短的、命令式的变更描述（必填） | Write a short, imperative tense description of the change（required）',
+      },
+      body: {
+        description:
+          '提供更长的变更描述（可选） | Provide a longer description of the change（optional）',
+      },
+      isBreaking: {
+        description: '有什么重大变更吗？| Are there any breaking changes?',
+      },
+      breakingBody: {
+        description:
+          '重大变更提交需要一个正文。请输入提交本身的更长描述 | A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself',
+      },
+      breaking: {
+        description: '描述重大变更 | Describe the breaking changes',
+      },
+      isIssueAffected: {
+        description: '此变更是否影响任何未解决的问题？| Does this change affect any open issues?',
+      },
+      issuesBody: {
+        description:
+          '如果问题已关闭，提交需要一个正文。请输入提交本身的更长描述 | If issues are closed, the commit requires a body. Please enter a longer description of the commit itself',
+      },
+      issues: {
+        description:
+          '添加问题引用（例如 "fix #123", "re #123"）| Add issue references (e.g. "fix #123", "re #123".)',
+      },
+    },
+  },
+};
+```
+
+写完自定义的配置规则后，我们要在创建提交之前对其进行 lint 校验，需要使用到 Husky 的 commit-msg 钩子。commit-msg 概念：存有当前提交信息的临时文件，如果该钩子脚本以非零值退出，Git 将放弃提交
+运行 shell 命令:
+
+```bash
+echo "pnpm dlx commitlint --edit \$1" > .husky/commit-msg
+# 这个 shell 脚本会在 .husky 文件夹生成一个 commit-msg 文件，并且写入以下内容
+"pnpm dlx commitlint --edit \$1"
+# 测试一下对于提交信息的检测，看是否符合我们在 Commitlint 定义的规则
+pnpm exec commitlint --from HEAD~1 --to HEAD --verbose
+# 这个命令的作用是检测你上一次的提交信息(前提是你有上一次提交信息)，并让 Commitlint 输出更详细的信息
+
+# 当然也可以来测试一下提交当前commit时，lint 校验是否起作用、在暂存区加一些测试文件，然后，输入 commit 信息即可。
+
+```
+
+到这一步，我们已经实现了基本的 commit 信息校验。但是它的提交信息还是要自己手动输入的如果想要通过自动化程序来避免这种纯手敲 commit 信息格式的错误、这时候我们就需要 Commitizen 来辅助我们生成一套标准化规范化的 Commit 信息。
+
+### 2.2.4 Commitizen
+
+在 Commitlint 官网的介绍中，有推荐一个 @commitlint/prompt-cli 来让我们创建交互式命令行。
+另一种代替方案是使用 Commitizen、Commitizen 是一个用于生成标准化规范化的 Commit 信息的命令行工具。
+
+两者的区别：
+
+1. @commitlint/prompt-cli 是官方提供的包，是 Commitlint 生态一部分，与 Commitlint 无缝衔接
+2. Commitizen 拥有着更大的社区、更广泛的使用、更成熟，灵活及定制化
+
+**安装**
+安装完后，我们还需要安装一个适配器，这里介绍两个：
+
+1. cz-conventional-changelog是 Commitizen 文档中介绍的适配器，也是广泛使用的适配器
+2. @commitlint/cz-commitlint 是 Commitlint 官方提供的 Commitizen 适配器，提供了一种更现代的交互方式
+
+```bash
+pnpm add --save-dev commitizen
+pnpm add --save-dev @commitlint/cz-commitlint
+
+```
+
+在 package.json 中写入以下内容:
+
+```json
+{
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  }
+}
+```
+
+在 commitlint.config.js 文件中配置 prompt 属性，比如：
+
+```js
+/** @type {import('@commitlint/types').UserConfig} */
+export default {
+  extends: ['@commitlint/config-conventional'],
+  ignores: [(commit) => commit === ''],
+  rules: {
+    //...规则，上文已经配置
+  },
+  prompt: {
+    questions: {
+      type: {
+        description: '选择你要提交的变更类型',
+        enum: {
+          feat: {
+            description: '新功能',
+            title: '新功能',
+            emoji: '✨',
+          },
+          fix: {
+            description: '修复bug',
+            title: 'Bug修复',
+            emoji: '🐛',
+          },
+          docs: {
+            description: '仅文档更改',
+            title: '文档',
+            emoji: '📚',
+          },
+          style: {
+            description: '不影响代码含义的更改（空白、格式化、缺少分号等）',
+            title: '样式',
+            emoji: '💎',
+          },
+          refactor: {
+            description: '既不修复bug也不添加新功能的代码更改',
+            title: '代码重构',
+            emoji: '📦',
+          },
+          perf: {
+            description: '提高性能的代码更改',
+            title: '性能优化',
+            emoji: '🚀',
+          },
+          test: {
+            description: '添加缺失的测试或修正现有的测试',
+            title: '测试',
+            emoji: '🚨',
+          },
+          //更多...
+        },
+      },
+    },
+  },
+};
+
+// 在配置好上面的内容后，我们就可以来测试一下效果了
+pnpm commit
+```
